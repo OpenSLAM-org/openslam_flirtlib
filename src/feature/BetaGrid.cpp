@@ -26,10 +26,18 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
 Descriptor* BetaGrid::clone() const{
     return new BetaGrid(*this);
 }
+	
+double BetaGrid::distance(const Descriptor* descriptor) const {
+    const BetaGrid *betaGrid = dynamic_cast<const BetaGrid *>(descriptor);
+    if(!m_distanceFunction || !betaGrid){
+	return 10e16;
+    }
+    return m_distanceFunction->distance(this->getHistogram(), betaGrid->getHistogram());
+}
+
 	
 void BetaGrid::getFlatDescription(std::vector<double>& description) const {
     description.clear();
@@ -81,14 +89,6 @@ void BetaGrid::getWeightedFlatDescription(std::vector<double>& description, std:
 	    *it /= sum;
 	}
     }*/
-}
-
-double BetaGrid::distance(const Descriptor* descriptor) const {
-    const BetaGrid *betaGrid = dynamic_cast<const BetaGrid *>(descriptor);
-    if(!m_distanceFunction || !betaGrid){
-	return 10e16;
-    }
-    return m_distanceFunction->distance(this->getHistogram(), betaGrid->getHistogram());
 }
 
 BetaGridGenerator::BetaGridGenerator(double minRho, double maxRho, unsigned int binRho, unsigned int binPhi)
